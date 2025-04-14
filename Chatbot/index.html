@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cybercrime Chatbot</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #0d1b2a;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .chat-container {
+        max-width: 90%; /* Increased width */
+        width: 90vw; /* Make it responsive */
+        height: 80vh; /* Increased height */
+        max-height: 85vh; /* Ensures it doesn’t overflow */
+        margin: 20px auto;
+        background: #1b263b;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .chat-box {
+        flex-grow: 1;
+        height: 70vh; /* Increased height */
+        overflow-y: auto;
+        padding: 10px;
+        border-radius: 5px;
+        background: #415a77;
+    }
+
+        .message {
+            padding: 10px;
+            border-radius: 10px;
+            margin: 5px 0;
+            max-width: 75%;
+        }
+        .user-message {
+            background-color: #2a9d8f;
+            align-self: flex-end;
+        }
+        .bot-message {
+            background-color: #e7535f;
+            align-self: flex-start;
+        }
+        .typing-indicator {
+            display: none;
+            font-style: italic;
+            color: #efb04c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container chat-container">
+        <h2 class="text-center">Cybercrime Chatbot</h2>
+        <div class="chat-box d-flex flex-column" id="chat-box"></div>
+        <p class="typing-indicator" id="typing-indicator">Chatbot is typing...</p>
+        <div class="input-group mt-3">
+            <input type="text" class="form-control" id="user-input" placeholder="Ask about cyber security...">
+            <button class="btn btn-success" id="send-btn"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("send-btn").addEventListener("click", sendMessage);
+        document.getElementById("user-input").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") sendMessage();
+        });
+
+        function sendMessage() {
+            let userInput = document.getElementById("user-input").value.trim();
+            if (!userInput) return;
+
+            let chatBox = document.getElementById("chat-box");
+            let typingIndicator = document.getElementById("typing-indicator");
+            chatBox.innerHTML += `<div class='message user-message'>${userInput}</div>`;
+            document.getElementById("user-input").value = "";
+            typingIndicator.style.display = "block";
+
+            fetch("http://127.0.0.1:8000/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: userInput })
+            })
+            .then(response => response.json())
+            .then(data => {
+                typingIndicator.style.display = "none";
+                chatBox.innerHTML += `<div class='message bot-message'>${data.response || "Error retrieving response."}</div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            })
+            .catch(error => {
+                typingIndicator.style.display = "none";
+                chatBox.innerHTML += `<div class='message bot-message'>Error: Unable to connect.</div>`;
+            });
+        }
+    </script>
+</body>
+</html>
