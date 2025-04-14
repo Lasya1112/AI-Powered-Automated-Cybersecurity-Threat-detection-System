@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Cybersecurity Dashboard</title>
+    <style>
+      /* CSS Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Arial", sans-serif;
+      }
+
+      body {
+        background-color: #f0f2f5;
+        color: #333;
+      }
+
+      header {
+        background-color: #1a237e;
+        color: white;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        font-size: 2.2rem;
+      }
+
+      .dashboard-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 2rem;
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .dashboard-section {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        width: 300px;
+        text-align: center;
+        transition: transform 0.3s ease;
+      }
+
+      .dashboard-section:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .dashboard-section h2 {
+        color: #1a237e;
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+      }
+
+      .dashboard-section p {
+        color: #666;
+        margin-bottom: 1.5rem;
+        line-height: 1.5;
+      }
+
+      .dashboard-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: #3949ab;
+      }
+
+      .btn {
+        background-color: #3949ab;
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .btn:hover {
+        background-color: #283593;
+      }
+
+      /* Chatbot Styles */
+      .chatbot-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background-color: #1a237e;
+        color: white;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 100;
+      }
+
+      .chatbot-btn i {
+        font-size: 1.5rem;
+      }
+
+      .chatbot-popup {
+        position: fixed;
+        bottom: 100px;
+        right: 30px;
+        width: 350px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        z-index: 101;
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .chatbot-header {
+        background-color: #1a237e;
+        color: white;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .chatbot-header h3 {
+        margin: 0;
+      }
+
+      .chatbot-close {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.2rem;
+        cursor: pointer;
+      }
+
+      .chatbot-body {
+        padding: 1rem;
+        height: 300px;
+        overflow-y: auto;
+      }
+
+      .chatbot-message {
+        margin-bottom: 1rem;
+        padding: 0.5rem 1rem;
+        border-radius: 18px;
+        max-width: 80%;
+        word-wrap: break-word;
+      }
+
+      .bot-message {
+        background-color: #e3f2fd;
+        color: #333;
+        align-self: flex-start;
+        border-bottom-left-radius: 5px;
+      }
+
+      .user-message {
+        background-color: #3949ab;
+        color: white;
+        align-self: flex-end;
+        margin-left: auto;
+        border-bottom-right-radius: 5px;
+      }
+
+      .chatbot-input {
+        display: flex;
+        padding: 0.5rem;
+        border-top: 1px solid #eee;
+      }
+
+      .chatbot-input input {
+        flex: 1;
+        padding: 0.8rem;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        outline: none;
+      }
+
+      .chatbot-input button {
+        background-color: #1a237e;
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 0 1.2rem;
+        margin-left: 0.5rem;
+        cursor: pointer;
+      }
+
+      @media (max-width: 768px) {
+        .dashboard-container {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .chatbot-popup {
+          width: 90%;
+          right: 5%;
+          bottom: 80px;
+        }
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>AI Cybersecurity Dashboard</h1>
+    </header>
+
+    <div class="dashboard-container">
+      <!-- Network Anomaly Detection Section -->
+      <div class="dashboard-section">
+        <div class="dashboard-icon">
+          <i class="fas fa-network-wired"></i>
+        </div>
+        <h2>Network Anomaly Detection</h2>
+        <p>
+          Our AI-powered system monitors your network traffic in real-time to
+          detect and alert you about any suspicious activities or anomalies.
+        </p>
+        <a href="network-anomaly.html" class="btn">View Network Status</a>
+      </div>
+
+      <!-- Malware Detection Section -->
+      <div class="dashboard-section">
+        <div class="dashboard-icon">
+          <i class="fas fa-virus"></i>
+        </div>
+        <h2>Malware Detection</h2>
+        <p>
+          Advanced machine learning algorithms scan and identify potential
+          malware threats before they can compromise your systems.
+        </p>
+        <a href="malware-detection.html" class="btn">Scan for Malware </a>
+        <p>Threats</p>
+      </div>
+
+      <!-- Phishing Email Detection Section -->
+      <div class="dashboard-section">
+        <div class="dashboard-icon">
+          <i class="fas fa-envelope"></i>
+        </div>
+        <h2>Phishing Email Detection</h2>
+        <p>
+          Our system analyzes incoming emails to detect phishing attempts and
+          protect your organization from social engineering attacks.
+        </p>
+        <button class="btn" onclick="sendPostRequest()">Check Emails</button>
+      </div>
+    </div>
+
+    <!-- Chatbot Button -->
+    <div class="chatbot-btn" id="chatbotBtn">
+      <i class="fas fa-robot"></i>
+    </div>
+
+    <!-- Chatbot Popup -->
+    <div class="chatbot-popup" id="chatbotPopup">
+      <div class="chatbot-header">
+        <h3>AI Security Assistant</h3>
+        <button class="chatbot-close" id="chatbotClose">&times;</button>
+      </div>
+      <div class="chatbot-body" id="chatbotBody">
+        <div class="chatbot-message bot-message">
+          Hello! I'm your AI Security Assistant. How can I help you with
+          cybersecurity today?
+        </div>
+      </div>
+      <div class="chatbot-input">
+        <input type="text" id="userInput" placeholder="Type your question..." />
+        <button id="sendMessage"><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+
+    <script>
+      // JavaScript for Chatbot Functionality
+      document.addEventListener("DOMContentLoaded", function () {
+        const chatbotBtn = document.getElementById("chatbotBtn");
+        const chatbotPopup = document.getElementById("chatbotPopup");
+        const chatbotClose = document.getElementById("chatbotClose");
+        const chatbotBody = document.getElementById("chatbotBody");
+        const userInput = document.getElementById("userInput");
+        const sendMessage = document.getElementById("sendMessage");
+
+        // Toggle chatbot popup
+        chatbotBtn.addEventListener("click", function () {
+          chatbotPopup.style.display =
+            chatbotPopup.style.display === "flex" ? "none" : "flex";
+        });
+
+        // Close chatbot
+        chatbotClose.addEventListener("click", function () {
+          chatbotPopup.style.display = "none";
+        });
+
+        // Send message function
+        function sendUserMessage() {
+          const message = userInput.value.trim();
+          if (message !== "") {
+            // Add user message to chat
+            const userMessage = document.createElement("div");
+            userMessage.classList.add("chatbot-message", "user-message");
+            userMessage.textContent = message;
+            chatbotBody.appendChild(userMessage);
+
+            // Clear input
+            userInput.value = "";
+
+            // Scroll to bottom
+            chatbotBody.scrollTop = chatbotBody.scrollHeight;
+
+            // Show typing indicator
+            const typingIndicator = document.createElement("div");
+            typingIndicator.classList.add("chatbot-message", "bot-message");
+            typingIndicator.textContent = "AI is typing...";
+            chatbotBody.appendChild(typingIndicator);
+            chatbotBody.scrollTop = chatbotBody.scrollHeight;
+
+            // Send message to FastAPI backend
+            fetch("http://127.0.0.1:8000/chat", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ message: message }),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                chatbotBody.removeChild(typingIndicator); // Remove typing indicator
+                const botResponse = document.createElement("div");
+                botResponse.classList.add("chatbot-message", "bot-message");
+                botResponse.textContent =
+                  data.response ||
+                  "I couldn't process your request. Try again.";
+                chatbotBody.appendChild(botResponse);
+                chatbotBody.scrollTop = chatbotBody.scrollHeight;
+              })
+              .catch((error) => {
+                chatbotBody.removeChild(typingIndicator); // Remove typing indicator
+                const errorMessage = document.createElement("div");
+                errorMessage.classList.add("chatbot-message", "bot-message");
+                errorMessage.textContent =
+                  "Error: Unable to connect to the chatbot.";
+                chatbotBody.appendChild(errorMessage);
+              });
+          }
+        }
+
+        // Send message on button click
+        sendMessage.addEventListener("click", sendUserMessage);
+
+        // Send message on Enter key
+        userInput.addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            sendUserMessage();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
